@@ -1,0 +1,11 @@
+{
+  "name": "Smart Interview Analyzer",
+  "description": "An AI-powered mock interview practice and analysis platform built with HTML, CSS, and Vanilla JavaScript.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
