@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Interview Analyzer - AI-Powered Mock Interview Platform</title>
+  <meta name="description" content="Practice HR and behavioral interviews with AI-powered performance analysis, facial expression evaluation, and emotional insights." />
+  <meta property="og:title" content="Smart Interview Analyzer" />
+  <meta property="og:description" content="AI-Powered Self-Interview Platform for HR and Behavioral Interviews" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Modern Clean Stylesheet -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       NAVBAR
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <!-- Logo -->
+      <div id="brand-logo-btn" class="brand-logo" data-target="dashboard">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" x2="12" y1="19" y2="22" />
+          </svg>
+        </div>
+        <span>Smart Interview Analyzer</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active" data-target="dashboard">Dashboard</a></li>
+        <li><a href="#" class="nav-link" data-target="start">Start Interview</a></li>
+        <li><a href="#" class="nav-link" data-target="history">History</a></li>
+      </ul>
+
+      <!-- Profile Avatar Button & Quick Camera Control -->
+      <div class="nav-profile-group">
+        <button id="btn-nav-enable-camera" class="btn btn-outline btn-sm" type="button" title="Enable Camera & Microphone">
+          <span>📷 Enable Camera</span>
+        </button>
+        <button id="nav-profile-btn" class="profile-avatar-btn" title="View Profile & Session History">
+          <div class="avatar-circle">JS</div>
+          <span class="avatar-name">Student Account</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========================================================================
+         VIEW 1: HOME / DASHBOARD
+         ======================================================================== -->
+    <section id="view-dashboard" class="view-section active dashboard-view">
+      <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-hero">
+          <div>
+            <span class="welcome-badge">Career AI Intelligence</span>
+            <h1 class="welcome-title">Ready for your next interview?</h1>
+            <p class="welcome-subtitle">
+              Practice HR and behavioral interviews with AI-powered performance analysis, facial gesture tracking, and actionable feedback.
+            </p>
+            <div class="welcome-actions">
+              <button id="btn-dash-start" class="btn btn-primary btn-lg">
+                <span>Start New Interview →</span>
+              </button>
+            </div>
+          </div>
+          <div class="welcome-illustration">
+            🎯
+          </div>
+        </div>
+
+        <!-- Performance Overview (4 Cards) -->
+        <div class="stats-grid">
+          <!-- Card 1 -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Interviews Completed</span>
+              <div class="stat-icon">🎓</div>
+            </div>
+            <div id="stat-completed" class="stat-value">0</div>
+            <div class="stat-subtext">All time sessions recorded</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Average Score</span>
+              <div class="stat-icon">📊</div>
+            </div>
+            <div id="stat-avg-score" class="stat-value">--</div>
+            <div class="stat-subtext">Calculated from saved history</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Latest Score</span>
+              <div class="stat-icon">🎯</div>
+            </div>
+            <div id="stat-latest-score" class="stat-value">--</div>
+            <div id="stat-latest-subtext" class="stat-subtext">Most recent session</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Improvement</span>
+              <div class="stat-icon">📈</div>
+            </div>
+            <div id="stat-improvement" class="stat-value" style="color: var(--success);">+0%</div>
+            <div class="stat-subtext positive">Compared to previous session</div>
+          </div>
+        </div>
+
+        <!-- Middle Section: Recent Performance Chart & Your Progress -->
+        <div class="dash-middle-grid">
+          <!-- Recent Performance Visual Chart -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3 class="card-box-title">Recent Performance</h3>
+              <span class="card-badge">Score Trajectory</span>
+            </div>
+
+            <div class="chart-container">
+              <svg id="dashboard-chart-svg" class="chart-svg" viewBox="0 0 500 170" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.4" />
+                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <!-- Grid guide lines -->
+                <line x1="30" y1="30" x2="480" y2="30" class="chart-grid-line" />
+                <line x1="30" y1="75" x2="480" y2="75" class="chart-grid-line" />
+                <line x1="30" y1="120" x2="480" y2="120" class="chart-grid-line" />
+                
+                <!-- Dynamic chart elements populated via JS -->
+                <polygon id="chart-path-area" points="50,150 450,150" class="chart-path-area" />
+                <polyline id="chart-path-line" points="50,150 450,150" class="chart-path-line" />
+                <g id="chart-dots-group"></g>
+              </svg>
+
+              <div id="dashboard-chart-labels" class="chart-labels">
+                <!-- Populated dynamically from history -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Your Progress Card -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3 class="card-box-title">Your Progress</h3>
+              <span id="progress-card-badge" class="card-badge" style="background: var(--success-bg); color: var(--success);">Session History</span>
+            </div>
+
+            <div class="progress-card-content">
+              <div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Interview Score Trend</span>
+                <div id="progress-sequence" class="progress-sequence">
+                  <!-- Dynamically populated from history -->
+                </div>
+
+                <div class="progress-callout">
+                  <div id="progress-callout-title" class="progress-callout-text">Track your interview preparation.</div>
+                  <p id="progress-callout-desc" class="progress-callout-desc">
+                    Each practice session evaluates facial emotion, voice acoustic features, answer text quality, and speech fluency.
+                  </p>
+                </div>
+              </div>
+
+              <button class="btn btn-secondary btn-sm" onclick="switchView('setup')" style="width: 100%;">
+                Start Another Practice Session
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Sessions Table -->
+        <div class="recent-sessions-box">
+          <div class="card-box-header">
+            <div>
+              <h3 class="card-box-title">Recent Interview History</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
+                Review past evaluations, multimodal scores, and detailed AI feedback.
+              </p>
+            </div>
+            <button id="btn-view-all-history" class="btn btn-outline btn-sm">
+              View All History →
+            </button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Interview Type</th>
+                  <th>Questions</th>
+                  <th>Overall Score</th>
+                  <th>Overall Grade</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recent-sessions-tbody">
+                <!-- Injected via JavaScript from localStorage -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 2: START INTERVIEW (SETUP)
+         ======================================================================== -->
+    <section id="view-setup" class="view-section setup-view">
+      <div class="container">
+        <div class="setup-card">
+          <div class="setup-header">
+            <span class="welcome-badge">Session Preparation</span>
+            <h2>Prepare for Your Interview</h2>
+            <p>
+              Answer naturally and confidently. Our AI will analyze your interview behavior, facial expressions, and provide personalized feedback.
+            </p>
+          </div>
+
+          <!-- Select Interview Type (HR & Behavioral ONLY) -->
+          <div class="setup-group">
+            <label class="setup-group-label">Select Interview Type</label>
+            <div class="types-grid">
+              <!-- HR Option -->
+              <div class="type-select-card selected" data-setup-type="hr">
+                <div class="type-card-top">
+                  <div class="type-card-icon">💼</div>
+                  <div class="type-radio-dot"></div>
+                </div>
+                <h4 class="type-select-title">HR Interview</h4>
+                <p class="type-select-desc">General HR and personality-based questions assessing career goals, strengths, and cultural fit.</p>
+              </div>
+
+              <!-- Behavioral Option -->
+              <div class="type-select-card" data-setup-type="behavioral">
+                <div class="type-card-top">
+                  <div class="type-card-icon">🧩</div>
+                  <div class="type-radio-dot"></div>
+                </div>
+                <h4 class="type-select-title">Behavioral Interview</h4>
+                <p class="type-select-desc">Situational questions that evaluate your problem-solving, teamwork, and workplace behavior.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Difficulty Selection -->
+          <div class="setup-group">
+            <label class="setup-group-label">Difficulty Level</label>
+            <div class="pills-grid">
+              <button class="pill-btn" data-setup-diff="beginner">Beginner</button>
+              <button class="pill-btn selected" data-setup-diff="intermediate">Intermediate</button>
+              <button class="pill-btn" data-setup-diff="advanced">Advanced</button>
+            </div>
+          </div>
+
+          <!-- Number of Questions (5 or 10) -->
+          <div class="setup-group">
+            <label class="setup-group-label">Number of Questions</label>
+            <div class="pills-grid" style="grid-template-columns: 1fr 1fr;">
+              <button class="pill-btn selected" data-setup-count="5">5 Questions (~7 mins)</button>
+              <button class="pill-btn" data-setup-count="10">10 Questions (~15 mins)</button>
+            </div>
+          </div>
+
+          <!-- Device Permission Box -->
+          <div class="device-check-box">
+            <div class="device-check-info">
+              <span class="device-check-icon">🎙️</span>
+              <div>
+                <strong style="color: var(--text-main); font-size: 0.95rem;">Webcam & Microphone Required</strong>
+                <p style="font-size: 0.825rem; color: var(--text-muted); margin: 0;">
+                  Your browser will request permission to access your camera and microphone for speech and expression analysis.
+                </p>
+              </div>
+            </div>
+            <button id="btn-setup-enable-camera" type="button" class="btn btn-outline btn-sm">
+              📷 Enable Camera
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="setup-actions">
+            <button id="btn-setup-back" class="btn btn-secondary">
+              ← Back to Dashboard
+            </button>
+            <button id="btn-begin-interview" class="btn btn-primary btn-lg">
+              <span>Begin Interview →</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 3: SELF INTERVIEW SCREEN (CORE WORKSPACE)
+         ======================================================================== -->
+    <section id="view-interview" class="view-section interview-view">
+      <div class="container">
+        <!-- Top Status Bar -->
+        <div class="interview-topbar">
+          <div class="interview-top-left">
+            <span id="top-session-pill" class="top-session-pill">HR Interview · Intermediate</span>
+            <span id="top-question-num" class="top-question-num">Question 1 of 5</span>
+          </div>
+
+          <div class="top-progress-wrap">
+            <div class="progress-track">
+              <div id="top-progress-bar" class="progress-fill" style="width: 20%;"></div>
+            </div>
+          </div>
+
+          <button id="btn-exit-interview" class="btn btn-outline btn-sm">
+            Exit Session
+          </button>
+        </div>
+
+        <!-- Main Workspace Grid -->
+        <div class="interview-main-grid">
+          <!-- Left: Live Webcam Preview Stage -->
+          <div class="camera-stage">
+            <!-- Inline Camera Permission Alert -->
+            <div id="camera-error-alert" class="camera-error-alert" style="display: none;">
+              <div class="alert-icon">⚠️</div>
+              <div class="alert-content">
+                <strong>Camera & Microphone Access Required:</strong>
+                <span id="camera-error-text">Please allow camera and microphone access in your browser site settings.</span>
+              </div>
+              <button id="btn-retry-camera" class="btn btn-primary btn-sm" type="button">
+                Enable Camera
+              </button>
+            </div>
+
+            <div id="video-frame" class="video-frame-container">
+              <!-- Live Video Feed -->
+              <video id="webcamPreview" autoplay playsinline muted></video>
+              <!-- Recorded Answer Preview Video -->
+              <video id="preview-video" controls playsinline style="display: none;"></video>
+
+              <!-- Top Left Status Badge -->
+              <div class="video-overlay-top-left">
+                <span class="camera-status-dot"></span>
+                <span id="camera-status-text">Camera Ready</span>
+              </div>
+
+              <!-- Top Right Timer Badge -->
+              <div class="video-overlay-timer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span id="timer-display">00:00</span>
+              </div>
+            </div>
+
+            <!-- Camera Stage Footer -->
+            <div class="camera-stage-footer">
+              <div class="audio-sound-meter">
+                <div class="sound-bar"></div>
+                <div class="sound-bar"></div>
+                <div class="sound-bar"></div>
+                <div class="sound-bar"></div>
+                <div class="sound-bar"></div>
+              </div>
+              <span id="stage-status-text" class="stage-status-text">
+                Camera & microphone ready. Click 'Start Answer' when ready.
+              </span>
+            </div>
+          </div>
+
+          <!-- Right Column: Question Panel + AI Behavior Analysis Sidebar -->
+          <div class="interview-right-col">
+            <!-- Question Panel -->
+            <div class="current-question-card">
+              <span class="question-kicker-text">Current Question</span>
+              <h3 id="active-question-heading" class="active-question-heading">
+                "Tell me about yourself."
+              </h3>
+
+              <div class="question-hint-box">
+                <strong style="color: var(--primary); display: block; margin-bottom: 3px;">💡 Mentor Tip:</strong>
+                <span id="active-question-tip">
+                  Structure your answer: your educational background, recent projects/roles, key strengths, and career objective.
+                </span>
+              </div>
+
+              <!-- Recording Controls -->
+              <div class="recording-controls-wrap">
+                <div class="btn-ctrl-row">
+                  <button id="btn-start-answer" class="btn btn-primary">
+                    <span>Start Answer</span>
+                  </button>
+                  <button id="btn-stop-answer" class="btn btn-danger" disabled>
+                    <span>Stop</span>
+                  </button>
+                  <button id="btn-retake-answer" class="btn btn-secondary" disabled>
+                    <span>Retake</span>
+                  </button>
+                </div>
+
+                <div id="rec-state-msg" class="rec-state-msg">
+                  Ready to record your answer.
+                </div>
+
+                <button id="btn-next-question" class="btn btn-secondary btn-lg" style="width: 100%;">
+                  <span>Next Question →</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Multimodal AI Monitoring Card -->
+            <div class="ai-behavior-card">
+              <div class="ai-behavior-header">
+                <div class="ai-behavior-title-wrap">
+                  <span class="ai-pulsing-eye"></span>
+                  <span class="ai-behavior-title">Multimodal AI Monitor</span>
+                </div>
+                <span class="ai-behavior-notice">localhost:5000</span>
+              </div>
+
+              <div class="behavior-metrics-list">
+                <div class="behavior-metric-row">
+                  <span class="b-metric-name"><span>🎭</span> Video Emotion</span>
+                  <span id="b-metric-video" class="b-metric-val">6 Emotion Classes</span>
+                </div>
+                <div class="behavior-metric-row">
+                  <span class="b-metric-name"><span>🎙️</span> Audio Emotion</span>
+                  <span id="b-metric-audio" class="b-metric-val">Voice Acoustic</span>
+                </div>
+                <div class="behavior-metric-row">
+                  <span class="b-metric-name"><span>💬</span> Speech Transcription</span>
+                  <span id="b-metric-transcription" class="b-metric-val">Whisper ASR</span>
+                </div>
+                <div class="behavior-metric-row">
+                  <span class="b-metric-name"><span>📊</span> Answer Quality</span>
+                  <span id="b-metric-quality" class="b-metric-val">Poor / Avg / Good</span>
+                </div>
+                <div class="behavior-metric-row">
+                  <span class="b-metric-name"><span>🗣️</span> Fluency & Fillers</span>
+                  <span id="b-metric-fluency" class="b-metric-val">Pacing & Fillers</span>
+                </div>
+              </div>
+
+              <!-- Live Observing Notice banner (shown while recording) -->
+              <div id="live-observing-notice" class="live-observing-banner" style="display: none;">
+                <strong>Recording Response</strong><br />
+                Answer will be sent to <code>http://localhost:5000/analyze</code> for speech, video, and audio emotion inference.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 4: INTERVIEW COMPLETION SCREEN
+         ======================================================================== -->
+    <section id="view-completion" class="view-section completion-view">
+      <div class="container">
+        <div class="completion-card">
+          <div class="completion-icon">🎉</div>
+          <h2 class="completion-title">Interview Completed!</h2>
+          <p class="completion-desc">
+            All your responses have been recorded. Click below to submit your recorded video to your Flask AI backend (<code style="background: var(--bg-lavender); padding: 2px 6px; border-radius: 4px;">http://localhost:5000/analyze</code>) for facial emotion, voice acoustic, transcript, and fluency evaluation.
+          </p>
+          <button id="btn-analyze-my-interview" class="btn btn-primary btn-lg">
+            <span>Analyze My Interview →</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 5: AI ANALYSIS LOADING SCREEN
+         ======================================================================== -->
+    <section id="view-loading" class="view-section loading-view">
+      <div class="container">
+        <div class="loading-card">
+          <!-- Animated Spinner -->
+          <div class="loader-anim-wrap">
+            <div class="loader-outer-spinner"></div>
+            <div class="loader-inner-spinner"></div>
+            <div class="loader-center-avatar">🤖</div>
+          </div>
+
+          <h2 class="loading-title">Analyzing Your Interview...</h2>
+          <p class="loading-subtitle">
+            Connecting to Flask backend at <code>http://localhost:5000/analyze</code>
+          </p>
+
+          <div id="load-question-progress" style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 16px;">
+            Preparing interview video upload...
+          </div>
+
+          <!-- 6 Step Progress Indicators -->
+          <div class="loading-steps-box">
+            <div id="load-step-1" class="load-step-item active">
+              <div class="load-step-bullet">1</div>
+              <span>Uploading interview...</span>
+            </div>
+            <div id="load-step-2" class="load-step-item">
+              <div class="load-step-bullet">2</div>
+              <span>Analyzing facial/video emotion...</span>
+            </div>
+            <div id="load-step-3" class="load-step-item">
+              <div class="load-step-bullet">3</div>
+              <span>Analyzing voice emotion...</span>
+            </div>
+            <div id="load-step-4" class="load-step-item">
+              <div class="load-step-bullet">4</div>
+              <span>Transcribing your answer...</span>
+            </div>
+            <div id="load-step-5" class="load-step-item">
+              <div class="load-step-bullet">5</div>
+              <span>Evaluating answer quality...</span>
+            </div>
+            <div id="load-step-6" class="load-step-item">
+              <div class="load-step-bullet">6</div>
+              <span>Generating final score...</span>
+            </div>
+          </div>
+
+          <!-- Error Box (Shown if backend is down or fails) -->
+          <div id="loading-error-box" class="loading-error-box" style="display: none;">
+            <h3 id="loading-error-title">⚠️ Unable to connect to the AI analysis server.</h3>
+            <p id="loading-error-subtext">Make sure the Smart Interview Analyzer backend is running on <strong>localhost:5000</strong>.</p>
+            <div id="loading-error-details" class="loading-error-details">
+              Failed to fetch http://localhost:5000/analyze
+            </div>
+            <div class="loading-error-actions">
+              <button id="btn-loading-retry" class="btn btn-primary btn-sm" type="button">
+                🔄 Try Again
+              </button>
+              <button id="btn-loading-check-health" class="btn btn-outline btn-sm" type="button">
+                🩺 Test /health
+              </button>
+              <button id="btn-loading-cancel" class="btn btn-secondary btn-sm" type="button">
+                ← Back to Interview
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 6: RESULTS DASHBOARD (REAL BACKEND RESULTS)
+         ======================================================================== -->
+    <section id="view-results" class="view-section results-view">
+      <div class="container">
+        <div class="results-header-block">
+          <span class="welcome-badge">AI Analysis Report</span>
+          <h2>Your Interview Performance</h2>
+          <p>
+            Multimodal evaluation powered by your Flask backend (Text: 40%, Audio: 30%, Video: 30%).
+          </p>
+        </div>
+
+        <!-- Overall Score Hero Banner -->
+        <div class="overall-result-hero">
+          <div class="overall-left-info">
+            <span class="overall-pill-tag">Overall Assessment</span>
+            <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;">
+              <h3 id="overall-grade-text" style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin: 0;">Good</h3>
+              <span id="overall-grade-badge" class="badge-pill" style="font-size: 0.95rem; font-weight: 700; background: var(--success-bg); color: var(--success); padding: 4px 14px;">
+                Final Grade: Good
+              </span>
+            </div>
+            <p id="overall-desc-text">
+              Weighted composite score calculated from speech answer text (40%), acoustic voice emotion (30%), and facial video emotion (30%).
+            </p>
+            <div class="score-weights-bar">
+              <span class="weight-pill"><strong>Text: 40%</strong> (Answer Quality)</span>
+              <span class="weight-pill"><strong>Audio: 30%</strong> (Voice Emotion)</span>
+              <span class="weight-pill"><strong>Video: 30%</strong> (Facial Emotion)</span>
+            </div>
+          </div>
+
+          <!-- Circular Score SVG -->
+          <div class="score-circle-outer">
+            <svg class="score-circle-svg" viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7c3aed" />
+                  <stop offset="100%" stop-color="#3b82f6" />
+                </linearGradient>
+              </defs>
+              <circle class="circle-track" cx="80" cy="80" r="70" />
+              <circle id="circle-progress-bar" class="circle-progress-bar" cx="80" cy="80" r="70" />
+            </svg>
+            <div class="score-circle-center">
+              <span id="overall-score-number" class="score-bold-num">82</span>
+              <span class="score-bold-denom">/ 100</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Row 1: Facial Emotion & Voice Emotion -->
+        <div class="backend-sections-grid">
+          <!-- 1. Facial / Video Emotion -->
+          <div class="backend-card">
+            <div class="backend-card-header">
+              <div class="backend-card-title-group">
+                <div class="backend-card-icon">🎭</div>
+                <div>
+                  <h4 class="backend-card-title">Facial / Video Emotion</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Weight: 30%</span>
+                </div>
+              </div>
+              <span id="video-score-badge" class="backend-card-score">Score: 85 / 100</span>
+            </div>
+
+            <div class="detected-badge-lead">
+              <div>
+                <span class="detected-label">Detected Emotion</span>
+                <div id="video-detected-emotion" class="detected-val">
+                  <span>😊</span> <span id="video-detected-text">Happy</span>
+                </div>
+              </div>
+              <div id="video-frame-stats" class="detected-sub">
+                <!-- Injected from video.frames / video.face_frames -->
+              </div>
+            </div>
+
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+              Emotion Probability Distribution
+            </div>
+            <div id="video-prob-bars" class="prob-bars-list">
+              <!-- Angry, Disgust, Fear, Happy, Neutral, Sad -->
+            </div>
+          </div>
+
+          <!-- 2. Voice / Audio Emotion -->
+          <div class="backend-card">
+            <div class="backend-card-header">
+              <div class="backend-card-title-group">
+                <div class="backend-card-icon">🎙️</div>
+                <div>
+                  <h4 class="backend-card-title">Voice / Audio Emotion</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Weight: 30%</span>
+                </div>
+              </div>
+              <span id="audio-score-badge" class="backend-card-score">Score: 78 / 100</span>
+            </div>
+
+            <div class="detected-badge-lead">
+              <div>
+                <span class="detected-label">Detected Emotion</span>
+                <div id="audio-detected-emotion" class="detected-val">
+                  <span>🎧</span> <span id="audio-detected-text">Neutral</span>
+                </div>
+              </div>
+              <div id="audio-confidence-badge" class="detected-sub" style="font-weight: 700; color: var(--primary);">
+                Confidence: 84%
+              </div>
+            </div>
+
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+              Emotion Probability Distribution
+            </div>
+            <div id="audio-prob-bars" class="prob-bars-list">
+              <!-- Angry, Disgust, Fear, Happy, Neutral, Sad -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Row 2: Answer Quality & Speaking / Fluency -->
+        <div class="backend-sections-grid">
+          <!-- 3. Answer Quality -->
+          <div class="backend-card">
+            <div class="backend-card-header">
+              <div class="backend-card-title-group">
+                <div class="backend-card-icon">💬</div>
+                <div>
+                  <h4 class="backend-card-title">Answer Quality</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Weight: 40%</span>
+                </div>
+              </div>
+              <span id="text-score-badge" class="backend-card-score">Score: 82 / 100</span>
+            </div>
+
+            <div class="detected-badge-lead">
+              <div>
+                <span class="detected-label">Answer Evaluation</span>
+                <div id="text-quality-label" class="detected-val">
+                  <span>⭐</span> <span id="text-quality-text">Good</span>
+                </div>
+              </div>
+              <div class="detected-sub">
+                NLP Semantic Analysis
+              </div>
+            </div>
+
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+              Quality Probabilities
+            </div>
+            <div id="text-prob-bars" class="prob-bars-list">
+              <!-- Poor, Average, Good -->
+            </div>
+          </div>
+
+          <!-- 4. Speaking & Fluency -->
+          <div class="backend-card">
+            <div class="backend-card-header">
+              <div class="backend-card-title-group">
+                <div class="backend-card-icon">🗣️</div>
+                <div>
+                  <h4 class="backend-card-title">Speaking & Fluency</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Speech Statistics</span>
+                </div>
+              </div>
+              <span id="fluency-status-badge" class="backend-card-score">Dynamic</span>
+            </div>
+
+            <!-- Fluency Stats Grid -->
+            <div id="fluency-stats-grid" class="fluency-stats-grid">
+              <div class="fluency-stat-box">
+                <div class="fluency-stat-label">Fluency Score</div>
+                <div id="fluency-score-val" class="fluency-stat-value">--</div>
+              </div>
+              <div class="fluency-stat-box">
+                <div class="fluency-stat-label">Filler Count</div>
+                <div id="fluency-filler-count" class="fluency-stat-value">0</div>
+              </div>
+              <div class="fluency-stat-box">
+                <div class="fluency-stat-label">Speaking Pace</div>
+                <div id="fluency-pace-val" class="fluency-stat-value" style="font-size: 1.05rem;">Steady</div>
+              </div>
+            </div>
+
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+              Detected Filler Words / Fluency Details
+            </div>
+            <div id="fluency-fillers-container" class="fillers-chips-wrap">
+              <!-- Chips dynamically injected -->
+            </div>
+            <div id="fluency-dynamic-details" style="margin-top: 12px; font-size: 0.85rem; color: var(--text-secondary);">
+              <!-- Any other returned fluency properties -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Your Answer Transcript -->
+        <div class="transcript-section-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.4rem;">📝</span>
+              <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0;">Your Answer Transcript</h3>
+            </div>
+            <div class="transcript-demo-callout">
+              <span>💡</span>
+              <span>What the candidate said → How AI evaluated it</span>
+            </div>
+          </div>
+
+          <div id="transcript-quote-box" class="transcript-quote-box">
+            <span id="transcript-content-text">
+              Transcribed answer will appear here...
+            </span>
+          </div>
+        </div>
+
+        <!-- 6. Question-Wise Results -->
+        <div class="question-breakdown-section">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 class="section-internal-title" style="margin: 0;">
+              <span>📋</span> Question-Wise Breakdown
+            </h3>
+            <span id="q-breakdown-count" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">
+              1 Question Analyzed
+            </span>
+          </div>
+
+          <!-- Question Tabs Nav if multiple questions -->
+          <div id="question-tabs-nav" class="question-tabs-nav">
+            <!-- Dynamic tab buttons -->
+          </div>
+
+          <div id="res-question-wise-list" class="q-cards-list">
+            <!-- Injected via JavaScript from backendResult(s) -->
+          </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="results-bottom-actions">
+          <button id="btn-results-practice-again" class="btn btn-primary btn-lg">
+            <span>Practice Another Interview</span>
+          </button>
+          <button id="btn-results-view-history" class="btn btn-secondary btn-lg">
+            <span>View Interview History</span>
+          </button>
+          <button id="btn-results-print" class="btn btn-outline btn-lg">
+            <span>🖨️ Print Report</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 7: INTERVIEW HISTORY
+         ======================================================================== -->
+    <section id="view-history" class="view-section history-view">
+      <div class="container">
+        <div class="history-card-wrap">
+          <div class="history-header">
+            <div>
+              <h2 class="history-title">Interview History</h2>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">
+                Review all past completed interview sessions from local storage.
+              </p>
+            </div>
+            <div class="history-action-row">
+              <button id="btn-history-start-new" class="btn btn-primary btn-sm">
+                + Start New Interview
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Interview Type</th>
+                  <th>Questions</th>
+                  <th>Overall Score</th>
+                  <th>Overall Grade</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <!-- Dynamically populated from localStorage -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-copy">
+        &copy; 2026 Smart Interview Analyzer · College Final Year / Semester AI Project
+      </div>
+      <ul class="footer-nav">
+        <li><a class="footer-nav-link" onclick="switchView('dashboard')">Dashboard</a></li>
+        <li><a class="footer-nav-link" onclick="switchView('start')">Practice Mock</a></li>
+        <li><a class="footer-nav-link" onclick="switchView('history')">Session History</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript Logic -->
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
